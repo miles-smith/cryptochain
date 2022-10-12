@@ -85,4 +85,51 @@ describe('Blockchain', () => {
       });
     });
   });
+
+  describe('replaceChain()', () => {
+    let incomingBlockchain;
+    let chainBeforeReplace;
+
+    beforeEach(() => {
+      incomingBlockchain = new Blockchain();
+      chainBeforeReplace = blockchain.chain;
+    });
+
+    describe('when the new chain is not longer', () => {
+      it('does not replace the chain', () => {
+        blockchain.addBlock({ data: 'test-0' });
+        incomingBlockchain.addBlock({ data: 'test-1' });
+
+        blockchain.replaceChain(incomingBlockchain.chain);
+
+        expect(blockchain.chain).toEqual(chainBeforeReplace);
+      });
+    });
+
+    describe('when the new chain is longer', () => {
+      beforeEach(() => {
+        incomingBlockchain.addBlock({ data: 'test-1' });
+        incomingBlockchain.addBlock({ data: 'test-2' });
+        incomingBlockchain.addBlock({ data: 'test-3' });
+      })
+
+      describe('and the chain is invalid', () => {
+        it('does not replace the chain', () => {
+          incomingBlockchain.chain[2].hash = 'invalid-hash';
+
+          blockchain.replaceChain(incomingBlockchain.chain);
+
+          expect(blockchain.chain).toEqual(chainBeforeReplace);
+        });
+      });
+
+      describe('and the chain is valid', () => {
+        it('replaces the chain', () => {
+          blockchain.replaceChain(incomingBlockchain.chain);
+          
+          expect(blockchain.chain).toEqual(incomingBlockchain.chain);
+        });
+      });
+    });
+  });
 });
