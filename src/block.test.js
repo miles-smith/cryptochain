@@ -3,11 +3,13 @@ const { GENESIS_DATA } = require('../config');
 const cryptoHash       = require('./crypto-hash');
 
 describe('Block', () => {
-  const timestamp = new Date();
-  const lastHash  = 'test-0';
-  const hash      = 'test-1';
-  const data      = ['blockchain', 'data'];
-  const block     = new Block({ timestamp, lastHash, hash, data});
+  const timestamp  = new Date();
+  const lastHash   = 'test-0';
+  const hash       = 'test-1';
+  const data       = ['blockchain', 'data'];
+  const nonce      = 1;
+  const difficulty = 1;
+  const block      = new Block({ timestamp, lastHash, hash, data, nonce, difficulty });
 
   it('should have a timestamp property', () => {
     expect(block).toHaveProperty('timestamp', timestamp);
@@ -23,6 +25,14 @@ describe('Block', () => {
 
   it('should have a data property', () => {
     expect(block).toHaveProperty('data', data);
+  });
+
+  it('should have a `difficulty` property', () => {
+    expect(block).toHaveProperty('difficulty', difficulty);
+  });
+
+  it('should have a `nonce` property', () => {
+    expect(block).toHaveProperty('nonce', nonce);
   });
 
   describe('genesis()', () => {
@@ -59,9 +69,22 @@ describe('Block', () => {
     });
 
     it('creates a SHA256 hash based on the proper inputs', () => {
-      const hash = cryptoHash(block.timestamp, lastBlock.hash, data);
+      const hash = cryptoHash(
+        block.timestamp,
+        block.difficulty,
+        block.nonce,
+        lastBlock.hash,
+        data,
+      );
 
       expect(block.hash).toEqual(hash);
+    });
+
+    it('sets a `hash` that matches the `difficulty` criteria', () => {
+      const target  = '0'.repeat(block.difficulty);
+      const attempt = block.hash.substring(0, block.difficulty);
+
+      expect(attempt).toEqual(target);
     });
   });
 });

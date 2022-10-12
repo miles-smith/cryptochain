@@ -23,7 +23,13 @@ class Blockchain {
       if(previousBlock.hash !== currentBlock.lastHash)
         return false;
 
-      const hash = cryptoHash(currentBlock.timestamp, currentBlock.lastHash, currentBlock.data);
+      const hash = cryptoHash(
+        currentBlock.timestamp,
+        currentBlock.lastHash,
+        currentBlock.difficulty,
+        currentBlock.nonce,
+        currentBlock.data
+      );
 
       if(hash !== currentBlock.hash)
         return false
