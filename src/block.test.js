@@ -1,14 +1,14 @@
-const Block            = require('./block');
-const { GENESIS_DATA } = require('../config');
-const cryptoHash       = require('./crypto-hash');
+const { GENESIS_DATA, MINE_RATE } = require('../config');
+const Block      = require('./block');
+const cryptoHash = require('./crypto-hash');
 
 describe('Block', () => {
-  const timestamp  = new Date();
+  const timestamp  = Date.now();
   const lastHash   = 'test-0';
   const hash       = 'test-1';
   const data       = ['blockchain', 'data'];
   const nonce      = 1;
-  const difficulty = 1;
+  const difficulty = 3;
   const block      = new Block({ timestamp, lastHash, hash, data, nonce, difficulty });
 
   it('should have a timestamp property', () => {
@@ -85,6 +85,48 @@ describe('Block', () => {
       const attempt = block.hash.substring(0, block.difficulty);
 
       expect(attempt).toEqual(target);
+    });
+
+    it('adjusts the difficulty', () => {
+      const possibleResults = [
+        lastBlock.difficulty + 1,
+        lastBlock.difficulty - 1,
+      ];
+
+      expect(possibleResults.includes(block.difficulty)).toBe(true);
+    });
+  });
+
+  describe('adjustDifficulty()', () => {
+    it('raises the difficulty for a quickly mined block', () => {
+      const expectedDifficulty = block.difficulty + 1;
+      const adjustedDifficulty = Block.adjustDifficulty({
+        block,
+        timestamp: block.timestamp + MINE_RATE - 100,
+      });
+
+      expect(adjustedDifficulty).toEqual(expectedDifficulty);
+    });
+
+    it('lowers the difficulty for a slowly mined block', () => {
+      const expectedDifficulty = block.difficulty - 1;
+      const adjustedDifficulty = Block.adjustDifficulty({
+        block,
+        timestamp: block.timestamp + MINE_RATE + 100,
+      });
+
+      expect(adjustedDifficulty).toEqual(expectedDifficulty);
+    });
+
+    it('has a lower limit of 1', () => {
+      block.difficulty = 1;
+
+      const adjustedDifficulty = Block.adjustDifficulty({
+        block,
+        timestamp: block.timestamp + MINE_RATE + 100,
+      });
+
+      expect(adjustedDifficulty).toEqual(1);
     });
   });
 });
