@@ -34,6 +34,9 @@ class Blockchain {
       if(hash !== currentBlock.hash)
         return false
 
+      if(Math.abs(previousBlock.difficulty - currentBlock.difficulty) > 1)
+        return false
+
       previousBlock = currentBlock;
     }
 
