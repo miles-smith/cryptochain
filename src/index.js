@@ -3,12 +3,14 @@ const request    = require('request');
 const Blockchain = require('./blockchain');
 const PubSub     = require('./pubsub');
 
+const DEFAULT_PORT      = 3000;
+const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
+
 const app        = express();
-const port       = process.env.PORT || 3000;
+const port       = process.env.PORT || DEFAULT_PORT;
 const blockchain = new Blockchain();
 const pubsub     = new PubSub({ blockchain });
 
-const ROOT_NODE_ADDRESS = 'http://localhost:3000';
 
 app.use(express.json());
 
@@ -45,5 +47,8 @@ const syncChain = () => {
 
 app.listen(port, () => {
   console.log('Listening on port', port);
-  syncChain();
+
+  if(port !== DEFAULT_PORT) {
+    syncChain();
+  }
 });
