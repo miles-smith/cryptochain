@@ -10,8 +10,6 @@ const pubsub     = new PubSub({ blockchain });
 
 const ROOT_NODE_ADDRESS = 'http://localhost:3000';
 
-setTimeout(() => { pubsub.broadcastChain() }, 1000);
-
 app.use(express.json());
 
 app.get('/api/v1/blocks', (req, res) => {
