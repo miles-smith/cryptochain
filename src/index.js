@@ -1,9 +1,13 @@
 const express    = require('express');
 const Blockchain = require('./blockchain');
+const PubSub     = require('./pubsub');
 
 const app        = express();
 const port       = process.env.PORT || 3000;
 const blockchain = new Blockchain();
+const pubsub     = new PubSub({ blockchain });
+
+setTimeout(() => { pubsub.broadcastChain() }, 1000);
 
 app.use(express.json());
 
@@ -16,6 +20,7 @@ app.post('/api/v1/blocks', (req, res) => {
 
   if(data) {
     blockchain.addBlock({ data });
+    pubsub.broadcastChain(blockchain.chain);
 
     res
       .status(201)
