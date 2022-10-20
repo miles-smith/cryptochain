@@ -10,7 +10,10 @@ const GENESIS_DATA = {
   data: [],
 };
 
+const INITIAL_BALANCE = 1000; // Give everyone a little start up currency.
+
 module.exports = {
   GENESIS_DATA,
   MINE_RATE,
+  INITIAL_BALANCE,
 };
