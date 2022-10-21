@@ -105,4 +105,84 @@ describe('Transaction', () => {
       });
     });
   });
+
+  describe('update()', () => {
+    let originalSignature;
+    let originalOutputBalance;
+    let nextRecipient;
+    let nextRecipientAmount;
+
+    describe('with sufficient funds', () => {
+      beforeEach(() => {
+        originalSignature     = transaction.input.signature;
+        originalOutputBalance = transaction.output[sender.publicKey];
+        nextRecipient         = 'another-recipient-public-key';
+        nextRecipientAmount   = 1;
+
+        transaction.update({
+          sender,
+          recipient: nextRecipient,
+          amount:    nextRecipientAmount,
+        });
+      });
+
+      it('outputs the amount to the next recipient', () => {
+        expect(transaction.output[nextRecipient]).toEqual(nextRecipientAmount);
+      });
+
+      it('subtracts the amount from the original sender (output) balance', () => {
+        const expectedOutputBalance = originalOutputBalance - nextRecipientAmount;
+
+        expect(transaction.output[sender.publicKey]).toEqual(expectedOutputBalance);
+      });
+
+      it('maintains a total output value that matches the input balance', () => {
+        const newOutputTotal = Object.values(transaction.output).reduce((acc, item) => acc + item);
+
+        expect(newOutputTotal).toEqual(transaction.input.balance);
+      });
+
+      it('re-signs the transaction', () => {
+        expect(transaction.input.signature).not.toEqual(originalSignature);
+      });
+
+      describe('for an existing recipient', () => {
+        let additionalAmount;
+
+        beforeEach(() => {
+          additionalAmount = 1;
+
+          transaction.update({
+            sender,
+            recipient: nextRecipient,
+            amount:    additionalAmount,
+          })
+        });
+
+        it('adjusts the recipient amount', () => {
+          expect(transaction.output[nextRecipient])
+            .toEqual(nextRecipientAmount + additionalAmount);
+        });
+
+        it('adjusts the senders output balance', () => {
+          expect(transaction.output[sender.publicKey])
+            .toEqual(originalOutputBalance - nextRecipientAmount - additionalAmount);
+        });
+      });
+    });
+
+    describe('with insufficient funds', () => {
+      it('throws an error', () => {
+        const invalidUpdate = () => {
+          transaction.update({
+            sender,
+            recipient: 'another-recipient-public-key',
+            amount:    sender.balance + 1
+          });
+        };
+
+        expect(invalidUpdate).toThrow('Insufficient funds!');
+      });
+    });
+  });
 });

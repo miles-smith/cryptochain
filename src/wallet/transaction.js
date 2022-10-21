@@ -29,6 +29,20 @@ class Transaction {
     return true;
   }
 
+  update({ sender, recipient, amount }) {
+    if(this.input.balance < amount)
+      throw new Error('Insufficient funds!');
+
+    // TODO: nullish assignment would be nice here...
+    const oldRecipientAmount = this.output[recipient] || 0;
+    const newRecipientAmount = oldRecipientAmount + amount;
+
+    this.output[recipient] = newRecipientAmount;
+    this.output[sender.publicKey] -= amount;
+
+    this.input = this._createInput({ sender });
+  }
+
   _createOutput({ sender, recipient, amount }) {
     return {
       [recipient]: amount,
