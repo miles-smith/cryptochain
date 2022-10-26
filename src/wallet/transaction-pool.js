@@ -3,6 +3,10 @@ class TransactionPool {
     this.transactions = {};
   }
 
+  rehydrate(transactions) {
+    this.transactions = transactions;
+  }
+
   setTransaction(transaction) {
     this.transactions[transaction.id] = transaction;
   }

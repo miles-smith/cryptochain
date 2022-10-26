@@ -72,12 +72,20 @@ app.post('/api/v1/transactions', (req, res) => {
     .json({ transaction });
 });
 
-const syncChain = () => {
+const syncWithRoot = () => {
   request({ url: `${ROOT_NODE_ADDRESS}/api/v1/blocks` }, (error, response, body) => {
     if(!error && response.statusCode === 200) {
       const rootChain = JSON.parse(body);
 
       blockchain.replaceChain(rootChain);
+    }
+  });
+
+  request({ url: `${ROOT_NODE_ADDRESS}/api/v1/transactions` }, (error, response, body) => {
+    if(!error && response.statusCode === 200) {
+      const { transactions } = JSON.parse(body);
+
+      transactionPool.rehydrate(transactions);
     }
   });
 };
@@ -86,6 +94,6 @@ app.listen(port, () => {
   console.log('Listening on port', port);
 
   if(port !== DEFAULT_PORT) {
-    syncChain();
+    syncWithRoot();
   }
 });
