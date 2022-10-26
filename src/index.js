@@ -39,6 +39,12 @@ app.post('/api/v1/blocks', (req, res) => {
   }
 });
 
+app.get('/api/v1/transactions', (req, res) => {
+  res
+    .status(200)
+    .json({ transactions: transactionPool.transactions });
+});
+
 app.post('/api/v1/transactions', (req, res) => {
   const { recipient, amount } = req.body.transaction;
   let transaction = transactionPool.findBySender({ sender: wallet.publicKey });
