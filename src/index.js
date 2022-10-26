@@ -13,7 +13,7 @@ const port            = process.env.PORT || DEFAULT_PORT;
 const blockchain      = new Blockchain();
 const transactionPool = new TransactionPool();
 const wallet          = new Wallet();
-const pubsub          = new PubSub({ blockchain });
+const pubsub          = new PubSub({ blockchain, transactionPool });
 
 
 app.use(express.json());
@@ -65,6 +65,7 @@ app.post('/api/v1/transactions', (req, res) => {
   }
 
   transactionPool.setTransaction(transaction);
+  pubsub.broadcastTransaction(transaction);
 
   res
     .status(200)
