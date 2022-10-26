@@ -5,11 +5,13 @@ const Wallet          = require('./wallet');
 describe('TransactionPool', () => {
   let transactionPool;
   let transaction;
+  let wallet;
 
   beforeEach(() => {
+    wallet          = new Wallet();
     transactionPool = new TransactionPool();
     transaction     = new Transaction({
-      sender:    new Wallet(),
+      sender:    wallet,
       recipient: 'test-recipient-public-key',
       amount:    1
     });
@@ -22,5 +24,15 @@ describe('TransactionPool', () => {
       expect(transactionPool.transactions).toHaveProperty(transaction.id);
       expect(transactionPool.transactions[transaction.id]).toBe(transaction);
     });
-  })
+  });
+
+  describe('findBySender()', () => {
+    it('returns an existing transaction', () => {
+      transactionPool.setTransaction(transaction);
+
+      const matchingTransaction = transactionPool.findBySender({ sender: wallet.publicKey });
+
+      expect(matchingTransaction).toBe(transaction);
+    });
+  });
 });
