@@ -35,4 +35,45 @@ describe('TransactionPool', () => {
       expect(matchingTransaction).toBe(transaction);
     });
   });
+
+  describe('validTransactions()', () => {
+    let transactions;
+
+    beforeEach(() => {
+      const otherWallet = new Wallet();
+
+      transactions = [];
+
+      for(let i = 0; i < 10; i++) {
+        const recipient = `test-recipient-${i}-public-key`;
+
+        transaction = new Transaction({
+          sender:    wallet,
+          recipient: recipient,
+          amount:    1
+        });
+
+        switch(i % 3) {
+          // invalidate ~33% of the transactions with bogus amounts...
+          case 0:
+            transaction.output[recipient] = wallet.balance + 1000000;
+            break;
+          // invalidate ~33% of the transactions with bad signatures...
+          case 1:
+            transaction.input.signature = otherWallet.sign('test');
+            break;
+          default:
+            transactions.push(transaction);
+        }
+
+        transactionPool.setTransaction(transaction);
+      }
+    });
+
+    it('returns valid transactions', () => {
+      const validTransactions = transactionPool.validTransactions();
+
+      expect(validTransactions).toEqual(transactions);
+    });
+  });
 });
