@@ -38,11 +38,15 @@ describe('TransactionPool', () => {
 
   describe('validTransactions()', () => {
     let transactions;
+    let errorMock;
 
     beforeEach(() => {
       const otherWallet = new Wallet();
 
       transactions = [];
+      errorMock    = jest.fn();
+
+      global.console.error = errorMock;
 
       for(let i = 0; i < 10; i++) {
         const recipient = `test-recipient-${i}-public-key`;
