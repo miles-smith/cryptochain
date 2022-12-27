@@ -2,6 +2,10 @@ const Transaction = require('./transaction');
 
 class TransactionPool {
   constructor() {
+    this.clear();
+  }
+
+  clear() {
     this.transactions = {};
   }
 
@@ -24,6 +28,18 @@ class TransactionPool {
       Object.values(this.transactions)
         .filter(transaction => Transaction.validate(transaction))
     );
+  }
+
+  clearBlockchainTransactions({ chain }) {
+    for(let i = 1; i < chain.length; i++) {
+      const block = chain[i];
+
+      for(let transaction of block.data) {
+        if(this.transactions[transaction.id]) {
+          delete this.transactions[transaction.id];
+        }
+      }
+    }
   }
 }
 
