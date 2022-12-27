@@ -1,3 +1,4 @@
+const { REWARD_INPUT, MINING_REWARD } = require('../../config');
 const Transaction = require('./transaction');
 const Wallet      = require('./wallet');
 
@@ -183,6 +184,26 @@ describe('Transaction', () => {
 
         expect(invalidUpdate).toThrow('Insufficient funds!');
       });
+    });
+  });
+
+  describe('rewardTransaction()', () => {
+    let rewardTransaction;
+    let minerWallet;
+
+    beforeEach(() => {
+      minerWallet = new Wallet();
+      rewardTransaction = Transaction.rewardTransaction({ wallet: minerWallet });
+    });
+
+    it('it creates a transaction with the reward input', () => {
+      expect(rewardTransaction.input).toEqual(REWARD_INPUT);
+    });
+
+    it('creates a transaction with the `MINING_REWARD`', () => {
+      const { output } = rewardTransaction;
+
+      expect(output[minerWallet.publicKey]).toEqual(MINING_REWARD);
     });
   });
 });

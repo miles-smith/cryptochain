@@ -1,11 +1,16 @@
 const uuid = require('uuid/v1');
 const { verifySignature } = require('../utils');
+const { REWARD_INPUT, MINING_REWARD } = require('../../config.js');
 
+// TODO: Consider OO principles and break apart this class into a heirarchy with seperate classes
+// for the different types of transaction (general, mining reward etc.) rather than stuffing
+// everything into this single class and overriding/bypassing behaviour and expectations based
+// upon instantiaton args.
 class Transaction {
-  constructor({ sender, recipient, amount }) {
+  constructor({ sender, recipient, amount, input, output }) {
     this.id     = uuid();
-    this.output = this._createOutput({ sender, recipient, amount });
-    this.input  = this._createInput({ sender });
+    this.output = output || this._createOutput({ sender, recipient, amount });
+    this.input  = input  || this._createInput({ sender });
   }
 
   static validate(transaction) {
@@ -27,6 +32,13 @@ class Transaction {
     }
 
     return true;
+  }
+
+  static rewardTransaction({ wallet }) {
+    return new this({ 
+      input: REWARD_INPUT,
+      output: { [wallet.publicKey]: MINING_REWARD },
+    });
   }
 
   update({ sender, recipient, amount }) {
