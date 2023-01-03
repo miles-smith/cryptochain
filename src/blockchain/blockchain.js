@@ -43,6 +43,10 @@ class Blockchain {
     return true
   }
 
+  length() {
+    return this.chain.length;
+  }
+
   lastBlock() {
     const index = this.chain.length - 1;
 
@@ -54,6 +58,10 @@ class Blockchain {
     const newBlock  = Block.mine({ lastBlock, data });
 
     return this.chain.push(newBlock);
+  }
+
+  fetchBlock(i) {
+    return this.chain[i];
   }
 
   replaceChain(chain, onSuccess) {
