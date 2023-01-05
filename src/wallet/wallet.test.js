@@ -103,7 +103,7 @@ describe('Wallet', () => {
 
     describe('and there are no outputs for the wallet', () => {
       it('returns the `INITIAL_BALANCE`', () => {
-        const actualBalance   = Wallet.calculateBalance({ wallet, blockchain });
+        const actualBalance   = Wallet.calculateBalance({ address: wallet.publicKey, blockchain });
         const expectedBalance = INITIAL_BALANCE;
 
         expect(actualBalance).toEqual(expectedBalance);
@@ -127,7 +127,7 @@ describe('Wallet', () => {
       });
 
       it('adds the sum of all outputs to the wallet balance', () => {
-        const actualBalance   = Wallet.calculateBalance({ wallet, blockchain });
+        const actualBalance   = Wallet.calculateBalance({ address: wallet.publicKey, blockchain });
         const expectedBalance = 
             INITIAL_BALANCE + 
             transactionOne.output[wallet.publicKey] +
@@ -149,7 +149,7 @@ describe('Wallet', () => {
       });
 
       it('returns the output amout of the most recent transaction', () => {
-        const actualBalance   = Wallet.calculateBalance({ wallet, blockchain });
+        const actualBalance   = Wallet.calculateBalance({ address: wallet.publicKey, blockchain });
         const expectedBalance = transaction.output[wallet.publicKey];
 
         expect(actualBalance).toEqual(expectedBalance);
@@ -179,7 +179,7 @@ describe('Wallet', () => {
         });
 
         it('includes the amounts in the returned balance', () => {
-          const actualBalance   = Wallet.calculateBalance({ wallet, blockchain });
+          const actualBalance   = Wallet.calculateBalance({ address: wallet.publicKey, blockchain });
           const expectedBalance = 
             transaction.output[wallet.publicKey] +
             sameBlockTransaction.output[wallet.publicKey] +
