@@ -1,3 +1,4 @@
+const path            = require('path');
 const express         = require('express');
 const request         = require('request');
 const Blockchain      = require('./blockchain');
@@ -17,6 +18,7 @@ const wallet          = new Wallet();
 const pubsub          = new PubSub({ blockchain, transactionPool });
 const miner           = new Miner({ blockchain, transactionPool, wallet, pubsub });
 
+app.use(express.static(path.resolve('client', 'dist')));
 app.use(express.json());
 
 app.get('/api/v1/blocks', (req, res) => {
@@ -84,6 +86,10 @@ app.get('/api/v1/wallet', (req, res) => {
     address: wallet.publicKey,
     balance: Wallet.calculateBalance({ wallet, blockchain }),
   });
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve('client', 'dist', 'index.html'));
 });
 
 const syncWithRoot = () => {
