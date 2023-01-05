@@ -1,12 +1,20 @@
 import React from 'react';
+import Wallet from './Wallet';
 
 const App = () => {
   return(
-    <main>
+    <div>
       <header>
         <h1>CryptoBro</h1>
       </header>
-    </main>
+
+      <main>
+      </main>
+    
+      <aside>
+        <Wallet />
+      </aside>
+    </div>
   );
 }
 
