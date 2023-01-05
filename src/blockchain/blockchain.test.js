@@ -123,18 +123,24 @@ describe('Blockchain', () => {
   });
 
   describe('replaceChain()', () => {
+    let wallet;
+    let transactionOne;
+    let transactionTwo;
     let incomingBlockchain;
     let chainBeforeReplace;
 
     beforeEach(() => {
+      wallet             = new Wallet();
+      transactionOne     = wallet.createTransaction({ recipient: 'test-recipient', amount: 1 });
+      transactionTwo     = wallet.createTransaction({ recipient: 'test-recipient', amount: 2 });
       incomingBlockchain = new Blockchain();
       chainBeforeReplace = blockchain.chain;
     });
 
     describe('when the new chain is not longer', () => {
-      beforeEach(() => {
-        blockchain.addBlock({ data: 'test-0' });
-        incomingBlockchain.addBlock({ data: 'test-1' });
+      beforeEach(() => { 
+        blockchain.addBlock({ data: [transactionOne] });
+        incomingBlockchain.addBlock({ data: [transactionTwo] });
 
         blockchain.replaceChain(incomingBlockchain.chain);
       });
@@ -150,9 +156,8 @@ describe('Blockchain', () => {
 
     describe('when the new chain is longer', () => {
       beforeEach(() => {
-        incomingBlockchain.addBlock({ data: 'test-1' });
-        incomingBlockchain.addBlock({ data: 'test-2' });
-        incomingBlockchain.addBlock({ data: 'test-3' });
+        incomingBlockchain.addBlock({ data: [transactionOne] });
+        incomingBlockchain.addBlock({ data: [transactionTwo] });
       })
 
       describe('and the chain is invalid', () => {
