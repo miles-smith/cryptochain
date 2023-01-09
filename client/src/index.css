@@ -1,0 +1,28 @@
+body {
+  background-color: #444;
+}
+
+.logo {
+  width: 125px;
+  height: 125px;
+}
+
+.app--header {
+  color: #fff;
+}
+
+.wallet {
+  word-wrap: break-word;
+}
+
+.blockchain.card header h2 {
+  margin: 0;
+}
+
+.blockchain--block {
+  cursor: pointer;
+}
+
+.transaction dl {
+  word-wrap: break-word;
+}

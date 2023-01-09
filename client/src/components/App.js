@@ -1,20 +1,27 @@
 import React from 'react';
-import Wallet from './Wallet';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Navbar from './Navbar';
+import Header from './Header';
+import Blockchain from './Blockchain';
 
 const App = () => {
-  return(
-    <div>
-      <header>
-        <h1>CryptoBro</h1>
-      </header>
+  return (
+    <>
+      <Navbar />
 
-      <main>
-      </main>
-    
-      <aside>
-        <Wallet />
-      </aside>
-    </div>
+      <Container>
+        <Header />
+        <Row>
+          <Col>
+            <main>
+              <Blockchain />
+            </main>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 

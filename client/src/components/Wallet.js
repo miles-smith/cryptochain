@@ -18,7 +18,10 @@ const Wallet = () => {
   }, []);
 
   return(
-    <div>
+    <div className="wallet">
+      <header>
+        <h4>Wallet</h4>
+      </header>
       <dl>
         <dt>Address:</dt>
         <dd>{address}</dd>
