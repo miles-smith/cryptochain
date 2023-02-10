@@ -5,22 +5,25 @@ import Col from 'react-bootstrap/Col';
 import Navbar from './Navbar';
 import Header from './Header';
 import Blockchain from './Blockchain';
+import NotificationsProvider from '../context/NotificationsProvider';
 
 const App = () => {
   return (
     <>
-      <Navbar />
+      <NotificationsProvider>
+        <Navbar />
 
-      <Container>
-        <Header />
-        <Row>
-          <Col>
-            <main>
-              <Blockchain />
-            </main>
-          </Col>
-        </Row>
-      </Container>
+        <Container>
+          <Header />
+          <Row>
+            <Col>
+              <main>
+                <Blockchain />
+              </main>
+            </Col>
+          </Row>
+        </Container>
+      </NotificationsProvider>
     </>
   );
 }
