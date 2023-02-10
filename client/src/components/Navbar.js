@@ -3,6 +3,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Wallet from './Wallet';
+import TransactionForm from './TransactionForm';
 
 import logo from '../assets/logo.png';
 
@@ -27,6 +28,12 @@ export default () => {
           <Offcanvas.Body>
             <Wallet />
             <hr />
+            <aside>
+              <header className="mb-3">
+                <h4>New Transaction</h4>
+              </header>
+              <TransactionForm />
+            </aside>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
       </Container>
